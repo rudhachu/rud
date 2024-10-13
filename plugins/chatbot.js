@@ -1,30 +1,25 @@
-const {
-        rudhra,
-        PREFIX,
-        getJson,
-        mode
-} = require('../lib');
+const { rudhra, getJson, mode } = require('../lib');
 const config = require("../config");
 
 rudhra({
         on: 'text',
-        fromMe: mode
-}, async (m, match) => {
-        //if(m.isCreator) return;
+        fromMe: mode,
+}, async (message, match) => {
+        //if(message.isCreator) return;
         if(config.CHATBOT == 'true') {
                 let data = await getJson(
-                        `http://api.brainshop.ai/get?bid=${config.BRAINSHOP.split(/[,;|]/)[0]}&key=${config.BRAINSHOP.split(/[,;|]/)[1]}&uid=[${m.sender.split('@')[0]}]&msg=[${m.body}]`
+                        `http://api.brainshop.ai/get?bid=${config.BRAINSHOP.split(/[,;|]/)[0]}&key=${config.BRAINSHOP.split(/[,;|]/)[1]}&uid=[${message.sender.split('@')[0]}]&msg=[${message.body}]`
                 )
-                return await m.reply(data.cnt)
-        } else if(config.CHATBOT == 'group' && m.isGroup) {
+                return await message.reply(data.cnt)
+        } else if(config.CHATBOT == 'group' && message.isGroup) {
                 let data = await getJson(
-                        `http://api.brainshop.ai/get?bid=${config.BRAINSHOP.split(/[,;|]/)[0]}&key=${config.BRAINSHOP.split(/[,;|]/)[1]}&uid=[${m.sender.split('@')[0]}]&msg=[${m.body}]`
+                        `http://api.brainshop.ai/get?bid=${config.BRAINSHOP.split(/[,;|]/)[0]}&key=${config.BRAINSHOP.split(/[,;|]/)[1]}&uid=[${message.sender.split('@')[0]}]&msg=[${message.body}]`
                 )
-                return await m.reply(data.cnt)
-        } else if(config.CHATBOT == 'pm' && !m.isGroup) {
+                return await message.reply(data.cnt)
+        } else if(config.CHATBOT == 'pm' && !message.isGroup) {
                 let data = await getJson(
-                        `http://api.brainshop.ai/get?bid=${config.BRAINSHOP.split(/[,;|]/)[0]}&key=${config.BRAINSHOP.split(/[,;|]/)[1]}&uid=[${m.sender.split('@')[0]}]&msg=[${m.body}]`
+                        `http://api.brainshop.ai/get?bid=${config.BRAINSHOP.split(/[,;|]/)[0]}&key=${config.BRAINSHOP.split(/[,;|]/)[1]}&uid=[${message.sender.split('@')[0]}]&msg=[${message.body}]`
                 )
-                return await m.reply(data.cnt)
+                return await message.reply(data.cnt)
         }
 });
