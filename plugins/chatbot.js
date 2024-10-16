@@ -1,6 +1,7 @@
 const {
         rudhra,
-        getJson,
+        mode,
+        getJson
 } = require('../lib');
 const config = require("../config");
 
