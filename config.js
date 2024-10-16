@@ -30,6 +30,7 @@ module.exports = {
   CAPTION: process.env.CAPTION || "ʀᴜᴅʜʀᴀ ʙᴏᴛ",
   CHATBOT : process.env.CHATBOT || "false",//true, pm, group
   DELETED_LOG_CHAT: process.env.DELETED_LOG_CHAT || false,
+  DISABLE_PM: toBool(process.env.DISABLE_PM || "false"),
   ERROR_MSG: toBool(process.env.ERROR_MSG) || true,
   HANDLERS: (process.env.PREFIX || '^[.,!]').trim(),
   LANG: process.env.LANGUAGE === undefined ? 'EN' : process.env.LANGUAGE.toUpperCase(),
