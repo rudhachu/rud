@@ -28,7 +28,7 @@ module.exports = {
   BOT_NAME: process.env.BOT_NAME || "Ʀᴜᴅʜʀᴀ ʙᴏᴛ",
   BRAINSHOP: process.env.BRAINSHOP || '172352,vTmMboAxoXfsKEQQ&uid',
   CAPTION: process.env.CAPTION || "ʀᴜᴅʜʀᴀ ʙᴏᴛ",
-  CHATBOT : process.env.CHATBOT || "false",//true, pm, group
+  CHATBOT : process.env.CHATBOT || "true",//true, pm, group
   DELETED_LOG_CHAT: process.env.DELETED_LOG_CHAT || false,
   DISABLE_PM: toBool(process.env.DISABLE_PM || "false"),
   ERROR_MSG: toBool(process.env.ERROR_MSG) || true,
