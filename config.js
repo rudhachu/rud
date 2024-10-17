@@ -26,11 +26,10 @@ module.exports = {
   AUTHOR: process.env.AUTHOR || "Ƥ ʀ ɪ ɴ ᴄ ᴇ  Ʀ ᴜ ᴅ ʜ",
   AUDIO_DATA: process.env.AUDIO_DATA || "Ʀ ᴜ ᴅ ʜ ʀ λ;Ƥ ʀ ɪ ɴ ᴄ ᴇ  Ʀ ᴜ ᴅ ʜ;https://raw.githubusercontent.com/rudhra-prh/media/main/image/rudhra2.jpg",
   BOT_NAME: process.env.BOT_NAME || "Ʀᴜᴅʜʀᴀ ʙᴏᴛ",
-  BRAINSHOP: process.env.BRAINSHOP || '172352,vTmMboAxoXfsKEQQ&uid',
   CAPTION: process.env.CAPTION || "ʀᴜᴅʜʀᴀ ʙᴏᴛ",
   CHATBOT : process.env.CHATBOT || "true",//true, pm, group
   DELETED_LOG_CHAT: process.env.DELETED_LOG_CHAT || false,
-  DISABLE_PM: toBool(process.env.DISABLE_PM || false,
+  DISABLE_PM: toBool(process.env.DISABLE_PM || "false"),
   ERROR_MSG: toBool(process.env.ERROR_MSG) || true,
   HANDLERS: (process.env.PREFIX || '^[.,!]').trim(),
   LANG: process.env.LANGUAGE === undefined ? 'EN' : process.env.LANGUAGE.toUpperCase(),
