@@ -13,7 +13,7 @@ const {
   parsedUrl
 } = require("../lib");
 const yts = require('yt-search');
-const fg = require('api-dylux');
+const ytdl = require('ytdl-core');
 const config = require('../config');
 
 const patterns = [
