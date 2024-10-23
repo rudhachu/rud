@@ -1,5 +1,5 @@
 {
-  "name": "rudh",
+  "name": "rudhra-bot",
   "version": "1.0.0",
   "description": "Rudhra Whatsapp Bot.",
   "main": "./index.js",
@@ -24,7 +24,7 @@
   "dependencies": {
     "@adiwajshing/baileys": "git+https://github.com/princerudh/Baileys.js.git",
     "@adiwajshing/keyed-db": "^0.2.4",
-    "api-dylux": "^1.8.5",
+    "@xaviabot/fb-downloader":"^1.0.14",
     "dotenv": "^16.4.5",
     "node": "20",
     "node-webpmux": "^3.1.0",
