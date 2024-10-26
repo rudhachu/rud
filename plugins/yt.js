@@ -64,7 +64,7 @@ patterns.forEach(({ pattern, desc, type }) => {
         }
 
         if (pattern === "song ?(.*)" || pattern === "yta ?(.*)") {
-          let down = await fg.yta(url);
+          let down = await ytdl.yta(url);
           let downloadUrl = down.dl_url;
 
           await message.client.sendMessage(
@@ -78,7 +78,7 @@ patterns.forEach(({ pattern, desc, type }) => {
             { quoted: message.data }
           );
         } else if (pattern === "video ?(.*)" || pattern === "ytv ?(.*)") {
-          let videoDown = await fg.ytv(url);
+          let videoDown = await ytdl.ytv(url);
           let videoUrl = videoDown.dl_url;
 
           await message.client.sendMessage(
