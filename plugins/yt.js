@@ -19,8 +19,9 @@ rudhra({
     pattern: 'song ?(.*)',
     fromMe: mode,
     desc: 'Search and download audio from YouTube.',
-    type: 'downloader'
-}, async (message, match) => {
+    type: 'info'
+}, async (message, match, client) => {
+    match = match || message.reply_message.text;
     if (!match) {
         return await message.reply('Please provide a search query.');
     }
@@ -35,15 +36,20 @@ rudhra({
         const firstVideo = videos[0];
         const videoUrl = firstVideo.url;
 
-        const response = await axios.get(`https://api-test-ajko.onrender.com/ytdl?url=${videoUrl}`);
+        const response = await axios.get(`https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/ytdl?url=${videoUrl}`);
         const { download_links, title } = response.data;
         const mp4 = download_links.mp4;
         await message.reply(`_Downloading ${title}_`);
         await message.client.sendMessage(
             message.jid,
-            { audio: { url: mp4 }, mimetype: 'audio/mpeg', fileName: `${title}.mp3` },
+            { audio: { url: mp4 }, mimetype: 'audio/mp4' },
             { quoted: message.data }
-        );
+          );
+          await message.client.sendMessage(
+            message.jid,
+            { document: { url: mp4 }, mimetype: 'audio/mpeg', fileName: `${title}.mp3`, caption: `_${title}_` },
+            { quoted: message.data }
+          );
     } catch (error) {
         console.error('Error fetching audio:', error);
         await message.reply('Failed to download audio. Please try again later.');
@@ -53,8 +59,9 @@ rudhra({
     pattern: 'video?(.*)',
     fromMe: mode,
     desc: 'Search and download video from YouTube.',
-    type: 'downloader'
-}, async (message, match) => {
+    type: 'info'
+}, async (message, match, client) => {
+    match = match || message.reply_message.text;
     if (!match) {
         return await message.reply('Please provide a search query.');
     }
@@ -69,7 +76,7 @@ rudhra({
         const firstVideo = videos[0];
         const videoUrl = firstVideo.url;
 
-        const response = await axios.get(`https://api-test-ajko.onrender.com/ytdl?url=${videoUrl}`);
+        const response = await axios.get(`https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/ytdl?url=${videoUrl}`);
         const { download_links, title } = response.data;
         const mp4 = download_links.mp4;
         await message.reply(`_Downloading ${title}_`);
@@ -87,23 +94,29 @@ rudhra({
     pattern: 'yta ?(.*)',
     fromMe: mode,
     desc: 'Download audio from YouTube.',
-    type: 'downloader'
-}, async (message, match) => {
+    type: 'info'
+}, async (message, match, client) => {
+    match = match || message.reply_message.text;
     if (!match) {
         return await message.reply('Please provide a YouTube video URL.');
     }
 
     const videoUrl = match;
     try {
-        const response = await axios.get(`https://api-test-ajko.onrender.com/ytdl?url=${videoUrl}`);
+        const response = await axios.get(`https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/ytdl?url=${videoUrl}`);
         const { download_links, title } = response.data;
         const mp4 = download_links.mp4;
         await message.reply(`_Downloading ${title}_`);
         await message.client.sendMessage(
             message.jid,
-            { audio: { url: mp4 }, mimetype: 'audio/mpeg', fileName: `${title}.mp3` },
+            { audio: { url: mp4 }, mimetype: 'audio/mp4' },
             { quoted: message.data }
-        );
+          );
+          await message.client.sendMessage(
+            message.jid,
+            { document: { url: mp4 }, mimetype: 'audio/mpeg', fileName: `${title}.mp3`, caption: `_${title}_` },
+            { quoted: message.data }
+          );
     } catch (error) {
         console.error('Error fetching audio:', error);
         await message.reply('Failed to download audio. Please try again later.');
@@ -114,15 +127,16 @@ rudhra({
     pattern: 'ytv ?(.*)',
     fromMe: mode,
     desc: 'Download video from YouTube.',
-    type: 'downloader'
-}, async (message, match) => {
+    type: 'info'
+}, async (message, match, client) => {
+    match = match || message.reply_message.text;
     if (!match) {
         return await message.reply('Please provide a YouTube video URL.');
     }
 
     const videoUrl = match;
     try {
-        const response = await axios.get(`https://api-test-ajko.onrender.com/ytdl?url=${videoUrl}`);
+        const response = await axios.get(`https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/ytdl?url=${videoUrl}`);
         const { download_links, title } = response.data;
         const mp4 = download_links.mp4;
         await message.reply(`_Downloading ${title}_`);
