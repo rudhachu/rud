@@ -8,66 +8,71 @@ const checkPermissions = async (message) => {
   return await message.isAdmin(message.sender);
 };
 
+// Delete a message sent by the bot
 rudhra({
-    pattern: 'del$',
-    fromMe: mode,
-    desc: 'Delete message sent by the bot',
-    type: 'whatsapp'
+  pattern: 'del$',
+  fromMe: mode,
+  desc: 'Delete message sent by the bot',
+  type: 'whatsapp'
 }, async (message, match, client) => {
-    if (!message.reply_message) return await message.reply('_Reply to a message_');
-    if (!message.quoted?.id || !message.quoted?.sender) return await message.reply("_Invalid message to delete_");
+  if (!message.reply_message) return await message.reply('_Reply to a message_');
+  if (!message.quoted?.id || !message.quoted?.sender) return await message.reply("_Invalid message to delete_");
 
-    await client.sendMessage(message.chat, {
-        delete: {
-            remoteJid: message.chat,
-            fromMe: true,
-            id: message.quoted.id,
-            participant: message.quoted.sender
-        }
-    });
+  await client.sendMessage(message.chat, {
+    delete: {
+      remoteJid: message.chat,
+      fromMe: true,
+      id: message.quoted.id,
+      participant: message.quoted.sender
+    }
+  });
 });
 
+// Delete a message sent by a participant
 rudhra({
-    pattern: 'dlt$',
-    fromMe: false,
-    onlyGroup: true,
-    desc: 'Delete message sent by a participant',
-    type: 'group'
+  pattern: 'dlt$',
+  fromMe: false,
+  onlyGroup: true,
+  desc: 'Delete message sent by a participant',
+  type: 'group'
 }, async (message, match, client) => {
-    if (!message.reply_message) return await message.reply('_Reply to a message_');
-    const isBotAdmin = await isBotAdmins(message, client);
-    if (!isBotAdmin) return await message.reply("I'm not an admin");
+  if (!message.reply_message) return await message.reply('_Reply to a message_');
 
-    if (!message.quoted?.id || !message.quoted?.sender) return await message.reply("_Invalid message to delete_");
+  // Check if bot is admin
+  const isBotAdmin = await message.isAdmin(client.user.jid);
+  if (!isBotAdmin) return await message.reply("I'm not an admin");
 
-    await client.sendMessage(message.chat, {
-        delete: {
-            remoteJid: message.chat,
-            fromMe: message.quoted.fromMe,
-            id: message.quoted.id,
-            participant: message.quoted.sender
-        }
-    });
+  if (!message.quoted?.id || !message.quoted?.sender) return await message.reply("_Invalid message to delete_");
+
+  await client.sendMessage(message.chat, {
+    delete: {
+      remoteJid: message.chat,
+      fromMe: message.quoted.fromMe,
+      id: message.quoted.id,
+      participant: message.quoted.sender
+    }
+  });
 });
 
+// Edit a message sent by the bot
 rudhra({
-    pattern: 'edit ?(.*)',
-    fromMe: true,
-    desc: 'Edit message sent by the bot',
-    type: 'whatsapp'
+  pattern: 'edit ?(.*)',
+  fromMe: true,
+  desc: 'Edit message sent by the bot',
+  type: 'whatsapp'
 }, async (message, match, client) => {
-    if (!message.reply_message) return await message.reply('_Reply to a message_');
-    if (!match) return await message.reply('_Need text!_\n*Example: edit hi*');
+  if (!message.reply_message) return await message.reply('_Reply to a message_');
+  if (!match) return await message.reply('_Need text!_\n*Example: edit hi*');
 
-    if (!message.quoted?.data?.key) return await message.reply("_Invalid message to edit_");
+  if (!message.quoted?.data?.key) return await message.reply("_Invalid message to edit_");
 
-    await client.relayMessage(message.jid, {
-        protocolMessage: {
-            key: message.quoted.data.key,
-            type: 14,
-            editedMessage: {
-                conversation: match
-            }
-        }
-    }, {});
+  await client.relayMessage(message.jid, {
+    protocolMessage: {
+      key: message.quoted.data.key,
+      type: 14,
+      editedMessage: {
+        conversation: match
+      }
+    }
+  });
 });
