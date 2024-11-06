@@ -46,6 +46,7 @@ module.exports = {
   AUTHOR: process.env.AUTHOR || "Ƥ ʀ ɪ ɴ ᴄ ᴇ  Ʀ ᴜ ᴅ ʜ",
   STICKER_DATA: process.env.STICKER_DATA || "Ʀ ᴜ ᴅ ʜ ʀ λ;Ƥ ʀ ɪ ɴ ᴄ ᴇ  Ʀ ᴜ ᴅ ʜ",
   SUDO: process.env.SUDO || '919895809960',
+  WARN_COUNT:process.env.WARN_COUNT || 3,
   HEROKU_APP_NAME: process.env.HEROKU_APP_NAME || "",
   HEROKU_API_KEY: process.env.HEROKU_API_KEY || "",
   HEROKU: toBool(process.env.HEROKU) || false,
