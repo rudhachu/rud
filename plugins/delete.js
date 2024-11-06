@@ -7,27 +7,67 @@ const checkPermissions = async (message) => {
   if (!config.ADMIN_ACCESS) return false;
   return await message.isAdmin(message.sender);
 };
-  
-rudhra({
-    pattern: "del",
-    fromMe: mode,  
-    desc: "Delete messages",
-    type: "group",
-  },
-  async (message, match) => {
-    try{
-      if (!message.isGroup) return;
-      if (!message.reply_message) return;
-    message.reply_message.jid;
-    let key = await message.reply_message.key
-    let isadmin = await isAdmin(message.jid, message.key.participant, message.client);
-    if (!isadmin) return await message.reply("_You're not admin_");
-    let ismeadmin = await isAdmin(message.jid, message.user, message.client);
-    if (!ismeadmin) return await message.reply("_I'm not admin_");
-    return await message.client.sendMessage(message.jid, { delete: key})
-  } catch (error) {
-    console.error("[Error]:", error);
-  }
 
-  }
-);
+rudhra({
+    pattern: 'del$',
+    fromMe: mode,
+    desc: 'Delete message sent by the bot',
+    type: 'whatsapp'
+}, async (message, match, client) => {
+    if (!message.reply_message) return await message.reply('_Reply to a message_');
+    if (!message.quoted?.id || !message.quoted?.sender) return await message.reply("_Invalid message to delete_");
+
+    await client.sendMessage(message.chat, {
+        delete: {
+            remoteJid: message.chat,
+            fromMe: true,
+            id: message.quoted.id,
+            participant: message.quoted.sender
+        }
+    });
+});
+
+rudhra({
+    pattern: 'dlt$',
+    fromMe: false,
+    onlyGroup: true,
+    desc: 'Delete message sent by a participant',
+    type: 'group'
+}, async (message, match, client) => {
+    if (!message.reply_message) return await message.reply('_Reply to a message_');
+    const isBotAdmin = await isBotAdmins(message, client);
+    if (!isBotAdmin) return await message.reply("I'm not an admin");
+
+    if (!message.quoted?.id || !message.quoted?.sender) return await message.reply("_Invalid message to delete_");
+
+    await client.sendMessage(message.chat, {
+        delete: {
+            remoteJid: message.chat,
+            fromMe: message.quoted.fromMe,
+            id: message.quoted.id,
+            participant: message.quoted.sender
+        }
+    });
+});
+
+rudhra({
+    pattern: 'edit ?(.*)',
+    fromMe: true,
+    desc: 'Edit message sent by the bot',
+    type: 'whatsapp'
+}, async (message, match, client) => {
+    if (!message.reply_message) return await message.reply('_Reply to a message_');
+    if (!match) return await message.reply('_Need text!_\n*Example: edit hi*');
+
+    if (!message.quoted?.data?.key) return await message.reply("_Invalid message to edit_");
+
+    await client.relayMessage(message.jid, {
+        protocolMessage: {
+            key: message.quoted.data.key,
+            type: 14,
+            editedMessage: {
+                conversation: match
+            }
+        }
+    }, {});
+});
