@@ -1,7 +1,7 @@
 const { rudhra, isAdmin ,parsedJid, mode } = require("../lib");
 const { PausedChats, WarnDB, saveWarn, resetWarn } = require("../lib");
 const { WARN_COUNT } = require("../config");
-const config = require('../config'); // Adjust the path as needed
+const config = require('../config');
 
 const checkPermissions = async (message) => {
     if (message.isSudo) return true;
@@ -19,25 +19,25 @@ rudhra({
   },
 async (message, match) => {
     if (!(await checkPermissions(message))) return;
-    const user = message.mention[0] || message.reply_message.jid;
-    if (!user) return message.reply("_Mention or reply to someone_");
+    const userId = message.mention[0] || message.reply_message.jid;
+    if (!userId) return message.reply("_Mention or reply to someone_");
     let isadmin = await isAdmin(message.jid, message.user, message.client);
     if (!isadmin) return
     let reason = message?.reply_message.text || match;
     reason = reason.replace(/@(\d+)/, "");
     reason = reason ? reason.length <= 1 : "Reason not Provided";
 
-    const warnInfo = await saveWarn(user, reason);
+    const warnInfo = await saveWarn(userId, reason);
     let userWarnCount = warnInfo ? warnInfo.warnCount : 0;
     userWarnCount++;
     await message.reply(
       `_User @${
-        user.split("@")[0]
+        userId.split("@")[0]
       } warned._ \n_Warn Count: ${userWarnCount}._ \n_Reason: ${reason}_`,
-      { mentions: [user] }
+      { mentions: [userId] }
     );
     if (userWarnCount > WARN_COUNT) {
-      const jid = parsedJid(user);
+      const jid = parsedJid(userId);
       await message.sendMessage(
         message.jid,
         "Warn limit exceeded kicking user"
@@ -61,15 +61,15 @@ rudhra({
   },
 async (message, match) => {
     if (!(await checkPermissions(message))) return;
-    const user = message.mention[0] || message.reply_message.jid;
-    if (!user) return message.reply("_Mention or reply to someone_");
+    const userId = message.mention[0] || message.reply_message.jid;
+    if (!userId) return message.reply("_Mention or reply to someone_");
     let isadmin = await isAdmin(message.jid, message.user, message.client);
     if (!isadmin) return
-    await resetWarn(user);
+    await resetWarn(userId);
     return await message.reply(
-      `_Warnings for @${user.split("@")[0]} reset_`,
+      `_Warnings for @${userId.split("@")[0]} reset_`,
       {
-        mentions: [user],
+        mentions: [userId],
       }
     );
   }
