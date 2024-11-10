@@ -1,6 +1,7 @@
 const { rudhra, isAdmin ,parsedJid, mode } = require("../lib");
 const { PausedChats, WarnDB, saveWarn, resetWarn } = require("../lib");
 const { WARN_COUNT } = require("../config");
+const config = require('../config'); // Adjust the path as needed
 
 const checkPermissions = async (message) => {
     if (message.isSudo) return true;
