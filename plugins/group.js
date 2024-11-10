@@ -296,7 +296,7 @@ async (message, match) => {
     if (!message.reply_message) return await message.reply('_Reply to a message_');
     const isadmin = await message.isAdmin(message.user);
     if (!isadmin) return await message.reply(`_I'm not admin._`);
-    await client.sendMessage(message.chat, {
+    await message.client.sendMessage(message.chat, {
         delete: {
             remoteJid: message.chat,
             fromMe: message.quoted.fromMe,
