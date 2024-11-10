@@ -285,6 +285,28 @@ async (message, match) => {
 });
 
 rudhra({
+    pattern: 'del',
+    fromMe: false,
+    onlyGroup: true,
+    type: 'group',
+    desc: 'Delete message sent by a participant.',
+},
+async (message, match) => {
+    if (!(await checkPermissions(message))) return;
+    if (!message.reply_message) return await message.reply('_Reply to a message_');
+    const isadmin = await message.isAdmin(message.user);
+    if (!isadmin) return await message.reply(`_I'm not admin._`);
+    await client.sendMessage(message.chat, {
+        delete: {
+            remoteJid: message.chat,
+            fromMe: message.quoted.fromMe,
+            id: message.quoted.id,
+            participant: message.quoted.sender
+        }
+    });
+});
+
+rudhra({
     pattern: "add ?(.*)",
     fromMe: false,
     desc: "Add a person to the group",
