@@ -21,7 +21,7 @@ rudhra({
 
     if (match == 'get') {
         const { warn } = await getWarn(['warn'], { jid: message.jid, content: {} }, 'get');
-        if (!Object.keys(warn)[0]) return await message.reply('_Not Found!_');
+        if (!Object.keys(warn)[0]) return await message.reply("_Not Found!_");
         
         let msg = '';
         for (const f in warn) {
@@ -33,14 +33,14 @@ rudhra({
         if (!message.reply_message.sender) return await message.reply("_Please Reply To a user_");
         
         const { warn } = await getWarn(['warn'], { jid: message.jid, content: {} }, 'get');
-        if (!Object.keys(warn)[0]) return await message.reply('_Not Found!_');
-        if (!Object.keys(warn).includes(message.reply_message.number)) return await message.reply('_User Not Found!_');
+        if (!Object.keys(warn)[0]) return await message.reply("_Not Found!_");
+        if (!Object.keys(warn).includes(message.reply_message.number)) return await message.reply("_User Not Found!_");
         
         await getWarn(['warn'], { jid: message.jid, content: { id: message.reply_message.number } }, 'delete');
-        return await message.reply('_Warn reset Successfully_');
+        return await message.reply("_Warn reset Successfully_");
     
     } else {
-        const admin = await isAdmin(message);
+        const admin = await client.groupMetadata(jid);
         if (!admin) return await message.reply("_I'm not admin._");
         if (!message.reply_message.sender) return await message.reply("_Please Reply To a user_");
 
