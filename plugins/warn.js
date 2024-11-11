@@ -71,7 +71,7 @@ rudhra({
         if (remains <= 0) {
             await getWarn(['warn'], { jid: message.jid, content: { id: message.reply_message.number } }, 'delete');
             if (admin) {
-                await message.client.groupParticipantsUpdate(message.from, [message.reply_message.sender], 'remove');
+                await message.client.groupMetadata(message.from, [message.reply_message.sender], 'remove');
                 return await message.reply("_Max warns reached, kicked out!_");
             }
         }
