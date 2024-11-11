@@ -1,8 +1,7 @@
 const {
     rudhra,
     getWarn,
-    isAdmin,
-    config
+    isAdmin
 } = require('../lib');
 const config = require('../config');
 
