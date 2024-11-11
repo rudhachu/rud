@@ -52,7 +52,7 @@ rudhra({
         return await message.reply('_Warn reset Successfully_');
     } else {
         const admin = await isAdmin(message);
-        if (!admin) return await message.reply('*_I'm not admin._*');
+        if (!admin) return await message.reply("_I'm not admin._");
         if (!message.reply_message.sender) return await message.reply("_Please Reply To a user_");
         const reason = match || 'warning';
         const {
