@@ -27,7 +27,7 @@ rudhra({
             jid: message.jid,
             content: {}
         }, 'get');
-        if (!Object.keys(warn)[0]) return await message.reply('_Not Found!_');
+        if (!Object.keys(warn)[0]) return await message.reply("_Not Found!_");
         let msg = '';
         for (const f in warn) {
             msg += `_*User:* @${f}_\n_*Count:* ${warn[f].count}_\n_*Remaining:* ${config.WARN_COUNT - warn[f].count}`;
@@ -41,15 +41,15 @@ rudhra({
             jid: message.jid,
             content: {}
         }, 'get');
-        if (!Object.keys(warn)[0]) return await message.reply('_Not Found!_');
-        if (!Object.keys(warn).includes(message.reply_message.number)) return await message.reply('_User Not Found!_');
+        if (!Object.keys(warn)[0]) return await message.reply("_Not Found!_");
+        if (!Object.keys(warn).includes(message.reply_message.number)) return await message.reply("_User Not Found!_");
         await getWarn(['warn'], {
             jid: message.jid,
             content: {
                 id: message.reply_message.number
             }
         }, 'delete');
-        return await message.reply('_Warn reset Successfully_');
+        return await message.reply("_Warn reset Successfully_");
     } else {
         const admin = await isAdmin(message);
         if (!admin) return await message.reply("_I'm not admin._");
@@ -80,7 +80,7 @@ rudhra({
 ╰─❏`
         await message.client.sendMessage(message.jid, (warnmsg, {
             mentions: [message.reply_message.sender], quoted: message
-        })
+        });
         if (remains <= 0) {
             await getWarn(['warn'], {
                 jid: message.jid,
