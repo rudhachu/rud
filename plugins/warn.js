@@ -1,9 +1,5 @@
-const {
-    rudhra,
-    getWarn,
-    isAdmin
-} = require('../lib');
-const config = require('../config');
+const { rudhra, mode, isAdmin, getWarn, parsedJid } = require("../lib/");
+const config = require("../config");
 
 const checkPermissions = async (message) => {
     if (message.isSudo) return true;
