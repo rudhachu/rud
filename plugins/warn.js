@@ -1,16 +1,16 @@
 const {
     rudhra,
     getWarn,
-    isAdmin,
-    config
+    isAdmin
 } = require('../lib');
+const config = require("../config");
 
 
 rudhra({
     pattern: 'warn ?(.*)',
     fromMe: true,
     onlyGroup: true,
-    desc: "warn a user in group",
+    desc: "Warn a user in group",
     type: "group",
 }, async (message, match) => {
     if (!match && !message.reply_message.sender) return await message.send('warn <reply to a user>\nresetwarn');
@@ -45,8 +45,8 @@ rudhra({
         }, 'delete');
         return await message.send('successfull');
     } else {
-        const BotAdmin = await isAdmin(message);
-        const admin = await isAdmin(message);
+        const BotAdmin = await isAdmin(message.jid, message.sender, message.client);
+        const admin = await isAdmin(message.jid, message.sender, message.client);
         if (!BotAdmin) return await message.reply('Iam not group admin');
         if (!message.reply_message.sender) return await message.send('replt to a user');
         const reason = match || 'warning';
