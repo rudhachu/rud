@@ -31,9 +31,7 @@ async (message, match) => {
     let userWarnCount = warnInfo ? warnInfo.warnCount : 0;
     userWarnCount++;
     await message.reply(
-      `_User @${
-        userId.split("@")[0]
-      } warned._ \n_Warn Count: ${userWarnCount}._ \n_Reason: ${reason}_`,
+      `     *⚠️ WARNING  ⚠️*\nUser @${userId.split("@")[0]}  \nWarn Count: ${userWarnCount}. \nReason: ${reason}`,
       { mentions: [userId] }
     );
     if (userWarnCount > WARN_COUNT) {
@@ -67,7 +65,7 @@ async (message, match) => {
     if (!isadmin) return
     await resetWarn(userId);
     return await message.reply(
-      `_Warnings for @${userId.split("@")[0]} reset_`,
+      `*Reset Warning For* @${userId.split("@")[0]}`,
       {
         mentions: [userId],
       }
