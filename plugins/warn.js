@@ -4,7 +4,6 @@ const {
     isAdmin,
     config
 } = require('../lib');
-const config = require("../config");
 
 const checkPermissions = async (message) => {
     if (message.isSudo) return true;
