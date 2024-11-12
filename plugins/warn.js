@@ -1,92 +1,73 @@
-const {
-    rudhra,
-    getWarn,
-    isAdmin
-} = require('../lib');
-const config = require("../config");
+const { rudhra, setWarn, resetWarn } = require('../lib/');
+const config = require('../config');
 
+async function isAdmin(participants, userId) {
+    return (await participants.filter(p => p.admin !== null).map(p => p.id)).includes(userId);
+}
 
 rudhra({
     pattern: 'warn ?(.*)',
     fromMe: true,
     onlyGroup: true,
-    desc: "Warn a user in group",
-    type: "group",
+    desc: 'Warn users in the chat',
+    type: 'group',
 }, async (message, match) => {
-    if (!match && !message.reply_message.sender) return await message.send('warn <reply to a user>\nresetwarn');
-    if (match == 'get') {
-        const {
-            warn
-        } = await getWarn(['warn'], {
-            jid: message.jid,
-            content: {}
-        }, 'get');
-        if (!Object.keys(warn)[0]) return await message.send('_Not Found!_');
-        let msg = '';
-        for (const f in warn) {
-            msg += `_*user:* @${f}_\n_*count:* ${warn[f].count}_\n_*remaining:* ${config.WARN_COUNT - warn[f].count}_\n\n`;
+    const user = message.mention[0] || message.reply_message.sender;
+    if (!user) return await message.reply('_Reply or mention a user_');
+    
+    const count = await setWarn(user, message.jid);
+    
+    if (count > config.WARN_COUNT) {
+        const groupMetadata = await message.client.groupMetadata(message.jid);
+        const participants = groupMetadata.participants;
+        
+        const botIsAdmin = await isAdmin(participants, message.client.user.jid);
+        const userIsAdmin = await isAdmin(participants, user);
+        
+        if (!botIsAdmin) return await message.reply("*I'm not an admin*");
+        if (userIsAdmin) return await message.reply('*Given user is an admin.*');
+        
+        await message.client.sendMessage(message.jid, {
+            text: `@${user.split('@')[0]}, *Kicked from the group*,\n_Reached max warnings._`,
+            mentions: [user]
+        });
+        await resetWarn(user, message.jid);
+        return await message.client.groupParticipantsUpdate(message.jid, [user], 'remove');
+    }
+    
+    let reason = 'No reason provided';
+    if (message.reply_message) {
+        reason = message.reply_message.text ? (message.reply_message.text.length > 40 ? 'Replied message' : message.reply_message.text) : message.reply_message.mtype.replace('Message', '');
+    }
+    if (match) {
+        reason = match.replace(`@${user.split('@')[0]}`, '').trim() || reason;
+    }
+
+    await message.client.sendMessage(message.jid, {
+        text: `*╭* ⚠️ WARNING ⚠️ \n┣ *User:* @${user.split('@')[0]}\n┣ *Warnings:* ${count}\n┣ *Reason:* ${reason}\n┣ *Remaining:* ${config.WARN_COUNT - count}\n*╰*`,
+        mentions: [user]
+    });
+});
+
+rudhra({
+    pattern: 'reset ?(.*)',
+    fromMe: true,
+    onlyGroup: true,
+    desc: 'Reset warnings for a user in the chat',
+    type: 'group'
+}, async (message, match) => {
+    if (match.startsWith('warn')) {
+        const user = message.mention[0] || message.reply_message.sender;
+        if (!user) return await message.reply('_Reply or mention a user_');
+        
+        try {
+            await resetWarn(user, message.jid);
+            await message.client.sendMessage(message.jid, {
+                text: `*╭* RESET WARNING\n┣ *User:* @${user.split('@')[0]}\n┣ *Remaining warnings:* ${config.WARN_COUNT}\n*╰*`,
+                mentions: [user]
+            });
+        } catch (error) {
+            return await message.reply("_The user doesn't have any warnings yet_");
         }
-        return await message.send(msg, {mentions: [message.reply_message.sender]});
-    } else if (match == 'reset') {
-        if (!message.reply_message.sender) return await message.send('reply to a user');
-        const {
-            warn
-        } = await getWarn(['warn'], {
-            jid: message.jid,
-            content: {}
-        }, 'get');
-        if (!Object.keys(warn)[0]) return await message.send('_Not Found!_');
-        if (!Object.keys(warn).includes(message.reply_message.number)) return await message.send('_User Not Found!_');
-        await getWarn(['warn'], {
-            jid: message.jid,
-            content: {
-                id: message.reply_message.number
-            }
-        }, 'delete');
-        return await message.send('successfull');
-    } else {
-        const BotAdmin = await isAdmin(message.jid, message.sender, message.client);
-        const admin = await isAdmin(message.jid, message.sender, message.client);
-        if (!BotAdmin) return await message.reply('Iam not group admin');
-        if (!message.reply_message.sender) return await message.send('replt to a user');
-        const reason = match || 'warning';
-        const {
-            warn
-        } = await getWarn(['warn'], {
-            jid: message.jid,
-            content: {}
-        }, 'get');
-        const count = Object.keys(warn).includes(message.reply_message.number) ? Number(warn[message.reply_message.number].count) + 1 : 1;
-        await getWarn(['warn'], {
-                jid: message.jid,
-                content: {
-                    [message.reply_message.number]: {
-                        count
-                    }
-                }
-            },
-            'add');
-        const remains = config.WARN_COUNT - count;
-        let warnmsg = `╭─⚠︎ ❮ *ᴡᴀʀɴɪɴɢ* ❯ ⚠︎
-│ _*ᴜsᴇʀ : @${message.reply_message.number}⁩*_
-│ _*ᴡᴀʀɴ : ${count}*_
-│ _*ʀᴇᴀsᴏɴ : ${reason}*_
-│ _*ʀᴇᴍᴀɪɴɪɴɢ : ${remains}*_
-╰──•`
-        await message.send(warnmsg, {
-            mentions: [message.reply_message.sender]
-        })
-        if (remains <= 0) {
-            await getWarn(['warn'], {
-                jid: message.jid,
-                content: {
-                    id: message.reply_message.number
-                }
-            }, 'delete');
-            if (BotAdmin) {
-                await message.client.groupParticipantsUpdate(message.from, [message.reply_message.sender], 'remove');
-                return await message.reply('max warm reached, user kicked')
-            };
-        };
-    };
-})
+    }
+});
