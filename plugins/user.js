@@ -49,6 +49,37 @@ rudhra(
     }
   }
 );
+rudhra({pattern: '🤗 ?(.*)', fromMe: true,dontAddCommandList: true, desc: 'Forward replied msg to you ðŸ¤—', type: 'user'}, async (message, match, client) => {return});
+rudhra({on: 'text', fromMe: true, dontAddCommandList: true, desc: 'Forward replied msg to you ðŸ¤—', type: 'user'}, async (message, match, client) => {
+if (message.message.startsWith("🤗")) { try { 
+let msg = message.message.replace("🤗", "");
+if (message.reply_message) { await message.forwardMessage(message.sender, message.quoted.data);
+      }
+    } catch (error) {
+      console.error('Error forwarding message:', error);
+    }
+  }
+});
+rudhra({ on: 'text', fromMe: true, dontAddCommandList: true }, async (message, match, client) => { 
+if (message.message.startsWith("•")) { try { 
+let msg = message.message.replace("•", "");
+if (message.reply_message) { await message.forwardMessage(message.sender, message.quoted.data);
+      }
+    } catch (error) {
+      console.error('Error forwarding message:', error);
+    }
+  }
+});
+rudhra({ on: 'text', fromMe: true, dontAddCommandList: true }, async (message, match, client) => { 
+if (message.message.startsWith("°")) { try { 
+let msg = message.message.replace("°", "");
+if (message.reply_message) { await message.forwardMessage(message.sender, message.quoted.data);
+      }
+    } catch (error) {
+      console.error('Error forwarding message:', error);
+    }
+  }
+});
 rudhra(
   {
     pattern: "forward ?(.*)",
