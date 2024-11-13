@@ -1,5 +1,5 @@
 const { rudhra, mode } = require("../lib/");
-const { downloadMediaMessage } = require('@whiskeysockets/baileys');
+const { downloadMediaMessage } = require("@whiskeysockets/baileys");
 
 rudhra({
     pattern: "vo",
