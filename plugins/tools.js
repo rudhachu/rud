@@ -1,4 +1,5 @@
 const { rudhra, mode } = require('../lib/');
+const { Baileys } = require('@whiskeysockets/baileys');
 rudhra({
     pattern: "vo",
     fromMe: mode,
