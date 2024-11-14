@@ -1,6 +1,4 @@
-const { rudhra, mode } = require("../lib/");
-const { downloadMediaMessage } = require("@whiskeysockets/baileys");
-
+const { rudhra, mode } = require('../lib/');
 rudhra({
     pattern: "vo",
     fromMe: mode,
