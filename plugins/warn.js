@@ -1,12 +1,12 @@
-const { rudhra, isAdmin, parsedJid, mode } = require("../lib");
+const { rudhra, isAdmin ,parsedJid, mode } = require("../lib");
 const { exec } = require("child_process");
 const { PausedChats, WarnDB } = require("../lib");
 const { WARN_COUNT } = require("../config");
 const { saveWarn, resetWarn } = require("../lib");
 
+
 // Warn Command
-rudhra(
-  {
+rudhra({
     pattern: "warn",
     fromMe: mode,
     desc: "Warn a user",
@@ -19,15 +19,18 @@ rudhra(
     // Extract reason for the warning, remove any user mentions
     let reason = message?.reply_message.text || match;
     reason = reason.replace(/@(\d+)/, "");
-    reason = reason ? reason : "Reason not provided";
+    reason = reason ? reason : "Reason not Provided";
 
     // Save warning information and increment warn count
     const warnInfo = await saveWarn(userId, reason);
-    let userWarnCount = warnInfo ? warnInfo.warnCount + 1 : 1;
+    let userWarnCount = warnInfo ? warnInfo.warnCount : 0;
+    userWarnCount++;
 
     // Notify about the warning with details
     await message.reply(
-      `_User @${userId.split("@")[0]} warned._ \n_Warn Count: ${userWarnCount}_ \n_Reason: ${reason}_`,
+      `_User @${
+        userId.split("@")[0]
+      } warned._ \n_Warn Count: ${userWarnCount}._ \n_Reason: ${reason}_`,
       { mentions: [userId] }
     );
 
@@ -37,14 +40,14 @@ rudhra(
         message.jid,
         "Warn limit exceeded. Kicking user."
       );
-      return await message.client.groupParticipantsUpdate(message.jid, [userId], "remove");
+      return await message.client.groupParticipantsUpdate(message.jid, [num], "remove");
     }
+    return;
   }
 );
 
 // Reset Warn Command
-rudhra(
-  {
+rudhra({
     pattern: "resetwarn",
     fromMe: mode,
     desc: "Reset warnings for a user",
