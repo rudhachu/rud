@@ -12,16 +12,16 @@ rudhra(
       // Check if the message is a reply to a view-once message
       if (
         !message.reply_message ||
-        (!m.quoted.message.viewOnceMessageV2 && !m.quoted.message.viewOnceMessageV2Extension)
+        (!message.quoted.viewOnceMessageV2 && !message.quoted.viewOnceMessageV2Extension)
       ) {
         return await message.reply("*Reply to a view-once message!*");
       }
 
       // Handle view-once image or video
-      const isViewOnceV2Extension = m.quoted.message.viewOnceMessageV2Extension;
+      const isViewOnceV2Extension = message.quoted.viewOnceMessageV2Extension;
       const viewOnceMessage = isViewOnceV2Extension
-        ? m.quoted.message.viewOnceMessageV2Extension
-        : m.quoted.message.viewOnceMessageV2;
+        ? message.quoted.viewOnceMessageV2Extension
+        : message.quoted.viewOnceMessageV2;
 
       // Download the view-once media
       const downloadedMedia = await downloadMediaMessage(
