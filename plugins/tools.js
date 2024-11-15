@@ -1,5 +1,4 @@
 const { rudhra, mode } = require("../lib/");
-const { downloadMediaMessage } = require("@whiskeysockets/baileys");
 
 rudhra(
   {
