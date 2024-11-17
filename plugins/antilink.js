@@ -1,4 +1,4 @@
-const { rudhra, isUrl, isAdmin, deleteMessage, removeParticipant } = require("../lib/");
+const { rudhra, mode, isUrl, isAdmin, deleteMessage, removeParticipant } = require("../lib/");
 const config = require("../config");
 
 rudhra({
