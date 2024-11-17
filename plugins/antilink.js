@@ -1,4 +1,5 @@
-const { isUrl, isAdmin, deleteMessage, removeParticipant } = require("./lib/antiLink");
+const { rudhra, isUrl, isAdmin, deleteMessage, removeParticipant } = require("../lib/");
+const config = require("../config");
 
 rudhra({
     on: "text",
