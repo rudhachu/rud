@@ -3,7 +3,7 @@ const config = require("../config");
 
 rudhra({
     on: "text",
-    fromMe: true,
+    fromMe: mode,
     onlyGroup: true,
     type: 'group',
     desc: 'AntiLink Delete message sent by a participant.',
