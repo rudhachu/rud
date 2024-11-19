@@ -1,52 +1,43 @@
-const { rudhra, mode, isUrl, isAdmin, deleteMessage, removeParticipant } = require("../lib/");
-const config = require("../config");
+const { mode, rudhra, isAdmin } = require("../lib/");
+const { setAntiLink, getAntiLink } = require("../lib/database/antilink");
 
-rudhra({
-    on: "text",
-    fromMe: false,
-    onlyGroup: true,
-    type: 'group',
-    desc: 'AntiLink Delete message sent by a participant.',
-}, async (message, match) => {
-    if (!message.isGroup) return;
-
-    if (config.ANTILINK && isUrl(match)) {
-        await message.reply("_Link detected_");
-
-        const botIsAdmin = await message.isAdmin(message.user);
-        if (!botIsAdmin) {
-            return await message.reply("*_I'm not an admin. Please make me an admin to enforce rules!_*");
-        }
-
-        const senderIsAdmin = await isAdmin(message.jid, message.user, message.client);
-        if (senderIsAdmin) {
-            return; // Do nothing if the sender is an admin
-        }
-
-        try {
-            if (!message.quoted) {
-                return await message.reply("_Error: Unable to find the quoted message._");
-            }
-
-            // Delete the message
-            await deleteMessage(message.client, message.chat, message.quoted);
-
-            const num = message.quoted.sender;
-            if (num === message.user) {
-                return await message.reply("_I cannot remove myself from the group!_");
-            }
-
-            // Kick the user
-            await removeParticipant(message.client, message.jid, num);
-
-            const userMention = `@${num.split("@")[0]}`;
-            return await message.client.sendMessage(message.jid, {
-                text: `*_ ${userMention}, has been removed for sharing prohibited links._*`,
-                mentions: [num],
-            });
-        } catch (error) {
-            console.error("Error:", error);
-            return await message.reply("_An error occurred while enforcing the rule. Please check the logs._");
-        }
+rudhra(
+  {
+    pattern: "antilink ?(.*)",
+    fromMe: mode,
+    desc: "to on off antiLink",
+    type: "group",
+  },
+  async (message, match) => {
+    const antilink = await getAntiLink(message.jid);
+    if (!match) {
+      const onOrOff = antilink.enabled ? "on" : "off";
+      return await message.send(
+        `_Antilink is ${onOrOff}_\n*Example :*\nantilink info\nantilink whatsapp.com\nantlink on | off`,
+      );
     }
-});
+    if (match == "on" || match == "off") {
+      if (match == "off" && !antilink)
+        return await message.send("_AntiLink is not enabled._");
+      await setAntiLink(message.jid, match == "on");
+      return await message.send(
+        `_AntiLink ${match == "on" ? "Enabled" : "Disabled."}_`,
+      );
+    }
+    if (match == "info")
+      return await message.send(
+        `*AntiLink :* ${antilink.enabled ? "on" : "off"}\n*AllowedUrl :* ${antilink.allowedUrls}\n*Action :* ${antilink.action}`,
+      );
+    if (match.startsWith("action/")) {
+      await setAntiLink(message.jid, match);
+      const action = match.replace("action/", "");
+      if (!["warn", "kick", "null"].includes(action))
+        return await message.send("*Invalid action*");
+      return await message.send(`_AntiLink action updated as ${action}_`);
+    }
+    const res = await setAntiLink(message.jid, match);
+    return await message.send(
+      `_AntiLink allowed urls are_\nAllow - ${res.allow.join(", ")}\nNotAllow - ${res.notallow.join(", ")}`,
+    );
+  },
+);
