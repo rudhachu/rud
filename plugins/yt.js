@@ -6,7 +6,6 @@ const {
 } = require("../lib");
 const fetch = require("node-fetch");
 const yts = require("yt-search");
-const config = require('../config');
 
 rudhra({
   pattern: "song ?(.*)",
@@ -14,10 +13,10 @@ rudhra({
   desc: "Search and download audio from YouTube.",
   type: "downloader",
 }, async (message, match, client) => {
-  match = match || message.reply_message.text;
-    if (!match) {
-        return await message.reply('Please provide a search query.');
-    }
+  if (!match) {
+    return await message.reply("Please provide a search query or YouTube URL.");
+  }
+
   try {
     const { baseUrl, apiKey } = await getApiConfig();
     let videoUrl, videoTitle;
@@ -68,10 +67,9 @@ rudhra({
   desc: "Search and download audio from YouTube.",
   type: "downloader",
 }, async (message, match, client) => {
-  match = match || message.reply_message.text;
-    if (!match) return await message.reply("Give me a YouTube link");
-    if (!isUrl(match)) return await message.reply("Give me a YouTube link");
-    
+  if (!match) {
+    return await message.reply("Please provide a search query or YouTube URL.");
+  }
 
   try {
     const { baseUrl, apiKey } = await getApiConfig();
@@ -123,10 +121,9 @@ rudhra({
   desc: "Search and download audio from YouTube.",
   type: "downloader",
 }, async (message, match, client) => {
-  match = match || message.reply_message.text;
-    if (!match) {
-        return await message.reply('Please provide a search query.');
-    }
+  if (!match) {
+    return await message.reply("Please provide a search query or YouTube URL.");
+  }
 
   try {
     const { baseUrl, apiKey } = await getApiConfig();
@@ -181,10 +178,9 @@ rudhra({
   desc: "Search and download audio from YouTube.",
   type: "downloader",
 }, async (message, match, client) => {
-  match = match || message.reply_message.text;
-    if (!match) return await message.reply("Give me a YouTube link");
-    if (!isUrl(match)) return await message.reply("Give me a YouTube link");
-    
+  if (!match) {
+    return await message.reply("Please provide a search query or YouTube URL.");
+  }
 
   try {
     const { baseUrl, apiKey } = await getApiConfig();
@@ -283,24 +279,23 @@ rudhra({
 
         const optionsText = `*_${dn.result.title}_*\n\n\`\`\`1.\`\`\` *audio*\n\`\`\`2.\`\`\` *video*\n\n_*Send a number as a reply to download*_`;
 
-        const contextInfoMessage = {
-            text: optionsText,
-            contextInfo: {
-                mentionedJid: [message.sender],
-                externalAdReply: {
-                    title: data.title,
-                    body: "ʀᴜᴅʜʀᴀ ʙᴏᴛ",
-                    sourceUrl: data.source_url,
-                    mediaUrl: data.source_url,
-                    mediaType: 1,
-                    showAdAttribution: true,
-                    renderLargerThumbnail: false,
-                    thumbnailUrl: data.thumbnail
-                }
-            }
+        const externalAdReply = {
+            title: dn.result.title,
+            body: "rudhra",
+            sourceUrl: sourceurl,
+            mediaUrl: sourceurl,
+            mediaType: 1,
+            showAdAttribution: true,
+            renderLargerThumbnail: false,
+            thumbnailUrl: thumbnail
         };
 
-        const sentMsg = await client.sendMessage(message.jid, contextInfoMessage, { quoted: message.data });
+        const sentMsg = await client.sendMessage(message.jid, { 
+            text: optionsText, 
+            contextInfo: { 
+                externalAdReply: externalAdReply
+            } 
+        }, { quoted: message.data });
 
            client.ev.on('messages.upsert', async (msg) => {
             const newMessage = msg.messages[0];
@@ -317,7 +312,7 @@ rudhra({
                         {
                             audio: { url: mp4 },
                             mimetype: 'audio/mpeg',
-                            fileName: `rudhra-bot.mp3`,
+                            fileName: `eypz.mp3`,
                             contextInfo: { externalAdReply: externalAdReply }
                         },
                         { quoted: message.data }
@@ -359,25 +354,22 @@ rudhra({
     }
 
     if (result && result.videos.length > 0) {
-      let formattedMessage = '*YouTube Top 10 Search Results:*\n\n';
+      let formattedMessage = '*Here are the top 10 search results for your query:*\n\n';
       
       result.videos.slice(0, 10).forEach((video, index) => {
-        formattedMessage += `*${index + 1},* *Title :* ${video.title}\n   *Duration :* ${video.duration}\n   *Link :* ${video.url}\n\n`;
+        formattedMessage += `*${index + 1}. ${video.title}*\nChannel: ${video.author.name}\nURL: ${video.url}\n\n`;
       });
 
       const contextInfoMessage = {
         text: formattedMessage,
         contextInfo: {
-          mentionedJid: [message.sender],
-          externalAdReply: {
-          title: "𝗬𝗼𝘂𝗧𝘂𝗯𝗲 𝗦𝗲𝗮𝗿𝗰𝗵 𝗥𝗲𝘀𝘂𝗹𝘁𝘀",
-                    body: "ʀᴜᴅʜʀᴀ ʙᴏᴛ",
-                    sourceUrl: "https://youtube.com/princerudh",
-                    mediaUrl: "https://youtube.com",
-                    mediaType: 1,
-                    showAdAttribution: true,
-                    renderLargerThumbnail: false,
-                    thumbnailUrl: "https://raw.githubusercontent.com/rudhra-prh/media/refs/heads/main/image/yts.png"
+          mentionedJid: [message.sender], 
+          forwardingScore: 1,
+          isForwarded: true,
+          forwardedNewsletterMessageInfo: {
+            newsletterJid: '120363298577467093@newsletter',
+            newsletterName: "rudhra-bot",
+            serverMessageId: -1
           }
         }
       };
