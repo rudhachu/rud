@@ -8,35 +8,59 @@ const {
 } = require("../lib");
 const axios = require('axios');
 const fetch = require('node-fetch');
-const yts = require("yt-search");
 
 rudhra({
-    pattern: 'yta ?(.*)',
-    fromMe: mode,
-    desc: 'Download audio from YouTube.',
-    type: 'info'
+  pattern: 'yta ?(.*)',
+  fromMe: mode,
+  desc: 'Download audio from YouTube.',
+  type: 'info'
 }, async (message, match, client) => {
-    match = match || message.reply_message.text;
-    if (!match) return await message.reply("Give me a YouTube link");
+  match = match || message.reply_message.text;
+  if (!match) return await message.reply("Please provide a valid YouTube link.");
 
-    const videoUrl = match;
-    try {
-        const response = await axios.get(`https://itzpire.com/download/youtube?url=${videoUrl}`);
-        const { download_links, title } = response.data;
-        const mp4 = download_links.mp4;
-        await message.reply(`_Downloading ${title}_`);
-        await message.client.sendMessage(
-            message.jid,
-            { audio: { url: mp4 }, mimetype: 'audio/mp4' },
-            { quoted: message.data }
-          );
-          await message.client.sendMessage(
-            message.jid,
-            { document: { url: mp4 }, mimetype: 'audio/mpeg', fileName: `${title}.mp3`, caption: `_${title}_` },
-            { quoted: message.data }
-          );
-    } catch (error) {
-        console.error('Error fetching audio:', error);
-        await message.reply('Failed to download audio. Please try again later.');
+  const videoUrl = match.trim();
+  
+  // Validate YouTube URL
+  const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+  if (!youtubeRegex.test(videoUrl)) {
+    return await message.reply("Invalid YouTube link. Please provide a proper URL.");
+  }
+
+  try {
+    // Call API
+    const response = await axios.get(`https://itzpire.com/download/youtube?url=${videoUrl}`);
+    console.log("API Response:", response.data); // Debugging
+
+    // Validate API response
+    const { download_links, title } = response.data;
+    if (!download_links || !download_links.mp4) {
+      return await message.reply("Failed to fetch download links. Please try another video.");
     }
+
+    const mp4 = download_links.mp4;
+
+    // Notify user and send audio
+    await message.reply(`_Downloading ${title}_`);
+    await message.client.sendMessage(
+      message.jid,
+      { audio: { url: mp4 }, mimetype: 'audio/mp4' },
+      { quoted: message.data }
+    );
+
+    // Send as document with metadata
+    await message.client.sendMessage(
+      message.jid,
+      {
+        document: { url: mp4 },
+        mimetype: 'audio/mpeg',
+        fileName: `${title}.mp3`,
+        caption: `_${title}_`
+      },
+      { quoted: message.data }
+    );
+
+  } catch (error) {
+    console.error("Error fetching audio:", error.message || error);
+    await message.reply("Failed to download audio. Please try again later.");
+  }
 });
