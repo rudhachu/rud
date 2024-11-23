@@ -2,28 +2,11 @@ const {
   rudhra,
   mode,
   PREFIX,
-  YuTbe,
-  parsedUrl,
   getApiConfig,
-  getBuffer, 
-  getJson
 } = require("../lib");
 const fetch = require("node-fetch");
 const yts = require("yt-search");
 
-rudhra({
-    pattern: 'ytbe?(.*)',
-    fromMe: mode,
-    desc: 'Search and download video from YouTube.',
-    type: 'info'
-}, async (message, match, client) => {
-		const yturl = match || message.quoted?.text;
-		const url = parsedUrl(yturl);
-		if (!url) return message.sendReply('_I need youtube url_');
-		const video = await YuTbe(url);
-		return await message.send(video.buffer, { caption: video.title });
-	},
-);
 rudhra({
   pattern: "song ?(.*)",
   fromMe: mode,
