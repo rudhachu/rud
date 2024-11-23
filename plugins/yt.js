@@ -5,6 +5,8 @@ const {
   YuTbe,
   parsedUrl,
   getApiConfig,
+  getBuffer, 
+  getJson
 } = require("../lib");
 const fetch = require("node-fetch");
 const yts = require("yt-search");
