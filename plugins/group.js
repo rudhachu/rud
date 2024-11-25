@@ -392,26 +392,40 @@ rudhra({
     fromMe: false,
     type: 'group',
     desc: 'AntiLink Delete message sent by a participant.',
-},
-async (message, match) => {
+}, async (message, match) => {
     if (!message.isGroup) return; // Ensure it's a group message
 
-    // Check if ANTI_LINK is enabled and message contains a link
+    // Check if ANTI_LINK is enabled and the message contains a link
     if (config.ANTI_LINK && !message.isSudo && /https?:\/\/[\w\-]+\.[\w\-]+(\/[^\s]*)?/i.test(message.text)) {
+        // Reply with a warning message if a link is found
         await message.reply("*🚫 Link Not Allowed*");
 
+        // Check if the bot is an admin
         const botIsAdmin = await isAdmin(message.jid, message.user, message.client);
+        // Check if the sender is an admin
         const senderIsAdmin = await isAdmin(message.jid, message.participant, message.client);
+
+        // Determine participant to be removed (from match or quoted message)
         const num = match || (message.quoted ? message.quoted.sender : null);
 
         if (botIsAdmin) {
-            // If bot is admin and sender is not an admin, take action
+            // If the bot is an admin and the sender is not an admin, take action
             if (!senderIsAdmin) {
-                await message.reply(`_Commencing Specified Action: ${config.ANTILINK_ACTION}_`);
-                return await message.client.groupParticipantsUpdate(message.jid, [num], "remove");
+                // Delete the quoted message if it exists
+                await message.client.sendMessage(message.chat, {
+                    delete: {
+                        remoteJid: message.chat,
+                        fromMe: message.quoted.fromMe,
+                        id: message.quoted.id,
+                        participant: message.quoted.sender
+                    }
+                });
             }
+
+            // Remove the sender from the group
+            return await message.client.groupParticipantsUpdate(message.jid, [num], "remove");
         } else {
-            // Inform if the bot is not an admin
+            // If the bot is not an admin, reply with an error message
             return await message.reply("*_I'm not an admin_*");
         }
     }
