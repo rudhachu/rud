@@ -399,7 +399,14 @@ async (message, match) => {
 
         // Check if ANTI_LINK is enabled and message contains a link
         if (config.ANTI_LINK && !message.isSudo && /https?:\/\/[\w\-]+\.[\w\-]+(\/[^\s]*)?/i.test(message.text)) {
-            await message.client.sendMessage(message.jid, { delete: message.key });
+            await message.client.sendMessage(message.chat, {
+        delete: {
+            remoteJid: message.chat,
+            fromMe: message.quoted.fromMe,
+            id: message.quoted.id,
+            participant: message.quoted.sender
+        }
+    });
 
             await message.client.groupParticipantsUpdate(
                 message.jid,
@@ -407,7 +414,7 @@ async (message, match) => {
                 "remove"
             );
 
-            return message.reply("_Deleted a Link !_");
+            return message.reply("_🚫 Link Not Allowed_");
         }
     } catch (e) {
         console.log(e);
