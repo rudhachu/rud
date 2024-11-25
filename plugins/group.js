@@ -394,29 +394,32 @@ rudhra({
     desc: 'AntiLink Delete message sent by a participant.',
 },
 async (message, match) => {
-    try {
-        if (!message.isGroup) return; // Ensure it's a group message
+    if (!message.isGroup) return; // Ensure it's a group message
 
-        // Check if ANTI_LINK is enabled and message contains a link
-        if (config.ANTI_LINK && !message.isSudo && /https?:\/\/[\w\-]+\.[\w\-]+(\/[^\s]*)?/i.test(message.text)) {
-            await message.client.sendMessage(message.chat, {
-        delete: {
-            remoteJid: message.chat,
-            fromMe: message.quoted.fromMe,
-            id: message.quoted.id,
-            participant: message.quoted.sender
+    // Check if ANTI_LINK is enabled and message contains a link
+    if (config.ANTI_LINK && !message.isSudo && /https?:\/\/[\w\-]+\.[\w\-]+(\/[^\s]*)?/i.test(message.text)) {
+        await message.reply("*_🚫 Link Not Allowed_*");
+
+        const botIsAdmin = await isAdmin(message.jid, message.user, message.client);
+        const senderIsAdmin = await isAdmin(message.jid, message.participant, message.client);
+
+        if (botIsAdmin) {
+            // If bot is admin and sender is not an admin, take action
+            if (!senderIsAdmin) {
+                await message.reply(`_Commencing Specified Action: ${config.ANTILINK_ACTION}_`);
+                await message.client.sendMessage(message.chat, {
+            delete: {
+              remoteJid: message.chat,
+              fromMe: message.quoted.fromMe,
+              id: message.quoted.id,
+              participant: message.quoted.sender
+            }
+          });
+                return await message.client.groupParticipantsUpdate(message.jid, [message.quoted.sender], "remove");
+            }
+        } else {
+            // Inform if the bot is not an admin
+            return await message.reply("*_I'm not an admin_*");
         }
-    });
-
-            await message.client.groupParticipantsUpdate(
-                message.jid,
-                [message.participant],
-                "remove"
-            );
-
-            return message.reply("_🚫 Link Not Allowed_");
-        }
-    } catch (e) {
-        console.log(e);
     }
 });
