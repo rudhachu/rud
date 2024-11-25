@@ -400,8 +400,8 @@ async (message, match) => {
     if (config.ANTI_LINK && !message.isSudo && /https?:\/\/[\w\-]+\.[\w\-]+(\/[^\s]*)?/i.test(message.text)) {
         await message.reply("*_🚫 Link Not Allowed_*");
 
-        const botIsAdmin = await isAdmin(message.jid, message.user, message.client);
-        const senderIsAdmin = await isAdmin(message.jid, message.participant, message.client);
+        let botIsAdmin = await isAdmin(message.jid, message.user, message.client);
+        let senderIsAdmin = await isAdmin(message.user);
 
         if (botIsAdmin) {
             // If bot is admin and sender is not an admin, take action
