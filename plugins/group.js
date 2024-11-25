@@ -402,12 +402,13 @@ async (message, match) => {
 
         const botIsAdmin = await isAdmin(message.jid, message.user, message.client);
         const senderIsAdmin = await isAdmin(message.jid, message.participant, message.client);
+        const num = match || (message.quoted ? message.quoted.sender : null);
 
         if (botIsAdmin) {
             // If bot is admin and sender is not an admin, take action
             if (!senderIsAdmin) {
                 await message.reply(`_Commencing Specified Action: ${config.ANTILINK_ACTION}_`);
-                return await message.client.groupParticipantsUpdate(message.jid, [message.participant], "remove");
+                return await message.client.groupParticipantsUpdate(message.jid, [num], "remove");
             }
         } else {
             // Inform if the bot is not an admin
