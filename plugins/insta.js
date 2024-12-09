@@ -30,7 +30,8 @@ rudhra({
         for (let media of resi.data) {
             await message.client.sendMessage(
                 message.jid,
-                { url: media.url }, // Ensure proper format for sending media
+                { video: { url: media.url }, // Ensure proper format for sending media
+                mimetype: "video/mp4"},
                 { quoted: message.data }
             );
         }
