@@ -25,7 +25,7 @@ rudhra({
             return await message.reply('_No media found or invalid URL!_');
         }
 
-        await message.sendMessage(message.jid, "_Uploading..._", { quoted: message });
+        await message.sendMessage(message.jid, "_Uploading..._", { quoted: message.data });
 
         for (let media of resi.data) {
             await message.sendMessage(
