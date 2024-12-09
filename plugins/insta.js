@@ -1,28 +1,41 @@
-const fetch = require('node-fetch'); 
-const { rudhra, mode, getJson } = require("../lib");
+const {
+    rudhra,
+    getJson,
+    mode,
+    getBuffer
+} = require("../lib/");
+const fetch = require('node-fetch');
 
 rudhra({
     pattern: 'insta ?(.*)',
     fromMe: mode,
-    desc: 'Download Instagram Media.',
-    type: 'downloader'
+    desc: 'Download Instagram Reels',
+    type: 'info'
 }, async (message, match, client) => {
-    const insta = match || message.reply_message.text;
+    const instaUrl = match;
 
-    if (!insta) {
-        return await message.reply('Where is the URL?');
-        return;
+    if (!instaUrl) {
+        return await message.reply('_Enter an Instagram URL!_');
     }
 
-    const url = `https://api.eypz.c0m.in/aio?url=${insta}`;
-    const rudh = await getJson(url);
-    const medias = rudh.medias;
-
-    if (Array.isArray(medias) && medias.length > 0) {
-        for (let fek of medias) {
-            await message.sendFile(fek);
+    try {
+        let resi = await getJson(`https://api.devstackx.in/v1/igdl?url=${instaUrl}`);
+        
+        if (!resi || !resi.data || resi.data.length === 0) {
+            return await message.reply('_No media found or invalid URL!_');
         }
-    } else {
-        await message.reply("No media found or an error occurred.");
+
+        await message.sendMessage(message.jid, "_Uploading..._", { quoted: message });
+
+        for (let media of resi.data) {
+            await message.sendMessage(
+                message.jid,
+                { url: media.url }, // Ensure proper format for sending media
+                { quoted: message.data }
+            );
+        }
+    } catch (error) {
+        console.error('Error fetching media:', error);
+        await message.reply('_Error fetching media!_');
     }
 });
