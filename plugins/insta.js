@@ -12,7 +12,7 @@ rudhra({
     desc: 'Download Instagram Reels',
     type: 'info'
 }, async (message, match, client) => {
-    const instaUrl = match;
+    const instaUrl = match || message.reply_message.text;
 
     if (!instaUrl) {
         return await message.reply('_Enter an Instagram URL!_');
