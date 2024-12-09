@@ -28,7 +28,7 @@ rudhra({
         await message.sendMessage(message.jid, "_Uploading..._", { quoted: message.data });
 
         for (let media of resi.data) {
-            await message.sendMessage(
+            await message.client.sendMessage(
                 message.jid,
                 { url: media.url }, // Ensure proper format for sending media
                 { quoted: message.data }
