@@ -31,7 +31,7 @@ rudhra({
     console.log("API Response:", response.data); // Debugging log
 
     // Access audio data
-    const { audio } = response.data.data;
+    const { audio } = response.data.result.url;
     if (!audio || !audio.url) {
       return await message.reply("Failed to fetch audio download link. Please try another video.");
     }
