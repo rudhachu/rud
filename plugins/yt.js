@@ -1,4 +1,4 @@
- const {
+const {
   rudhra,
   mode,
   isUrl,
@@ -258,31 +258,28 @@ rudhra({
     }
 });
 
-/*
-rudhra(
-  {
-    pattern: "yts ?(.*)",
-    fromMe: mode,
-    desc: "Search YouTube videos",
-    type: "downloader",
-  },
-  async (message, match, m) => {
-    try {
-      match = match || message.reply_message.text;
+rudhra({
+  pattern: 'yts ?(.*)', 
+  fromMe: mode,
+  desc: 'Search for videos on YouTube.',
+  type: 'downloader'
+}, async (message, match, client) => {
+  const query = match;
+  if (!query) {
+    return await message.reply('*Please provide a search query.*');
+  }
 
-      if (!match) {
-        await message.reply("Please provide a search query to find YouTube videos.\nExample: `.yts How you like that`");
-        return;
-      }
+  yts(query, async (err, result) => {
+    if (err) {
+      return message.reply('*Error occurred while searching YouTube.*');
+    }
 
-      const response = await getJson(eypzApi + `ytdl/search?query=${encodeURIComponent(match)}`);
-
-      if (!response || response.results.length === 0) {
-        await message.reply("Sorry, no YouTube videos found for your search query.");
-        return;
-      }
-
-      const formattedMessage = formatYouTubeMessage(response.results);
+    if (result && result.videos.length > 0) {
+      let formattedMessage = '*YouTube Search Results:*\n\n';
+      
+      result.videos.slice(0, 10).forEach((video, index) => {
+        formattedMessage += `*${index + 1}. ${video.title}*\nChannel: ${video.author.name}\nURL: ${video.url}\n\n`;
+      });
 
       const contextInfoMessage = {
         text: formattedMessage,
@@ -296,27 +293,14 @@ rudhra(
                     mediaType: 1,
                     showAdAttribution: true,
                     renderLargerThumbnail: false,
-                    thumbnailUrl: "https://raw.githubusercontent.com/rudhra-prh/media/refs/heads/main/image/yts.png"
+                    thumbnailUrl: "https://raw.githubusercontent.com/rudhraan/media/refs/heads/main/image/yts.png"
           }
         }
       };
 
       await message.client.sendMessage(message.jid, contextInfoMessage);
-
-    } catch (error) {
-      console.error("Error fetching YouTube videos:", error);
-      await message.reply("Error fetching YouTube videos. Please try again later.");
+    } else {
+      await message.reply('*No results found for that query.*');
     }
-  }
-);
-
-function formatYouTubeMessage(videos) {
-  let message = "*YouTube Search Results:*\n\n";
-
-  videos.forEach((video, index) => {
-    message += `*${index + 1},* *Title :* ${video.title}\n   *Duration :* ${video.duration}\n   *Link :* ${video.url}\n\n`;
   });
-
-  return message;
-}
-*/
+});
