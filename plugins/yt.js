@@ -39,16 +39,16 @@ rudhra({
 
         const response = await axios.get(`https://api.tioo.eu.org/download/ytdl?url=${videoUrl}`);
         const { result, title } = response.data;
-        const mp4 = result.mp4;
-        await message.reply(`_Downloading ${title}_`);
+        const mp3 = result.mp3;
+        await message.reply(`_Downloading ${result.title}_`);
         await message.client.sendMessage(
             message.jid,
-            { audio: { url: mp4 }, mimetype: 'audio/mp4' },
+            { audio: { url: mp3 }, mimetype: 'audio/mp4' },
             { quoted: message.data }
           );
           await message.client.sendMessage(
             message.jid,
-            { document: { url: mp4 }, mimetype: 'audio/mpeg', fileName: `${title}.mp3`, caption: `_${title}_` },
+            { document: { url: mp3 }, mimetype: 'audio/mpeg', fileName: `${result.title}.mp3`, caption: `_${result.title}_` },
             { quoted: message.data }
           );
     } catch (error) {
@@ -80,10 +80,10 @@ rudhra({
         const response = await axios.get(`https://api.tioo.eu.org/download/ytdl?url=${videoUrl}`);
         const { result, title } = response.data;
         const mp4 = result.mp4;
-        await message.reply(`_Downloading ${title}_`);
+        await message.reply(`_Downloading ${result.title}_`);
         await message.client.sendMessage(
             message.jid,
-            { video: { url: mp4 }, mimetype: 'video/mp4', fileName: `${title}.mp4` },
+            { video: { url: mp4 }, mimetype: 'video/mp4', fileName: `${result.title}.mp4` },
             { quoted: message.data }
         );
     } catch (error) {
@@ -106,16 +106,16 @@ rudhra({
     try {
         const response = await axios.get(`https://api.tioo.eu.org/download/ytdl?url=${videoUrl}`);
         const { result, title } = response.data;
-        const mp4 = result.mp4;
-        await message.reply(`_Downloading ${title}_`);
+        const mp3 = result.mp3;
+        await message.reply(`_Downloading ${result.title}_`);
         await message.client.sendMessage(
             message.jid,
-            { audio: { url: mp4 }, mimetype: 'audio/mp4' },
+            { audio: { url: mp3 }, mimetype: 'audio/mp4' },
             { quoted: message.data }
           );
           await message.client.sendMessage(
             message.jid,
-            { document: { url: mp4 }, mimetype: 'audio/mpeg', fileName: `${title}.mp3`, caption: `_${title}_` },
+            { document: { url: mp3 }, mimetype: 'audio/mpeg', fileName: `${result.title}.mp3`, caption: `_${result.title}_` },
             { quoted: message.data }
           );
     } catch (error) {
@@ -139,10 +139,10 @@ rudhra({
         const response = await axios.get(`https://api.tioo.eu.org/download/ytdl?url=${videoUrl}`);
         const { result, title } = response.data;
         const mp4 = result.mp4;
-        await message.reply(`_Downloading ${title}_`);
+        await message.reply(`_Downloading ${result.title}_`);
         await message.client.sendMessage(
             message.jid,
-            { video: { url: mp4 }, mimetype: 'video/mp4', fileName: `${title}.mp4` },
+            { video: { url: mp4 }, mimetype: 'video/mp4', fileName: `${result.title}.mp4` },
             { quoted: message.data }
         );
     } catch (error) {
@@ -230,7 +230,7 @@ rudhra({
                     await client.sendMessage(
                         message.jid,
                         {
-                            audio: { url: data.result.mp4 },
+                            audio: { url: data.result.mp3 },
                             mimetype: 'audio/mpeg',
                             fileName: `rudhra-bot.mp3`,
                             contextInfo: { externalAdReply: externalAdReply }
@@ -257,7 +257,7 @@ rudhra({
         await client.sendMessage(message.jid, { text: "An error occurred while fetching media. Please try again." });
     }
 });
-/*
+*/
 rudhra(
   {
     pattern: "yts ?(.*)",
@@ -318,4 +318,4 @@ function formatYouTubeMessage(videos) {
 
   return message;
 }
-*/
+/*
