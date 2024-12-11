@@ -26,7 +26,7 @@ rudhra({
         }
 
         // Display download options
-        const optionsText = `*${data.result.title}*\n\n\`\`\`*1.*\`\`\` *SD video*\n\`\`\`*2.*\`\`\` *HD video*\n\n*ʀᴇᴘʟʏ ᴡɪᴛʜ ᴀ ɴᴜᴍʙᴇʀ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ*`;
+        const optionsText = `*${data.result.title}*\n\n *1.* *SD video*\n *2.* *HD video*\n\n*ʀᴇᴘʟʏ ᴡɪᴛʜ ᴀ ɴᴜᴍʙᴇʀ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ*`;
         const contextInfoMessage = {
             text: optionsText,
             contextInfo: {
