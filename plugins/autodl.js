@@ -35,7 +35,7 @@ const isYtUrl = (text) => {
       desc: "Auto download media from any Url",
       type: "auto",
     },
-    async (message, match) => {
+    async (message, match, client) => {
       const text = match
       if (isIgUrl(text)) {
         await downloadInstaMedia(message, text);
@@ -46,7 +46,7 @@ const isYtUrl = (text) => {
   
       }
       else if (isYtUrl(text)) {
-        await downloadYoutubeMedia(message, message.reply_message.text);
+        await downloadYoutubeMedia(message, text);
   
       }
     }
@@ -54,7 +54,8 @@ const isYtUrl = (text) => {
   
   const downloadInstaMedia = async (message, match, client) => {
     await message.reply("_Please wait..._");
-    const instaUrl = getUrl(match.trim())[0];
+    const regex = /(https?:\/\/[^\s]+)/;
+    const instaUrl = match.match(regex);
     try {
         let resi = await getJson(`https://api-aswin-sparky.koyeb.app/api/downloader/story?url=${instaUrl}`);
         
