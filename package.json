@@ -54,7 +54,6 @@
     "megajs": "^1.1.0",
     "moment-timezone": "^0.5.40",
     "mumaker": "^2.0.0",
-    "nayan-video-downloader": "^0.0.2",
     "node-cron": "^3.0.3",
     "node-fetch": "^2.7.0",
     "node-koyeb-api": "^1.0.7",
