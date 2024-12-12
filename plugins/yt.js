@@ -37,7 +37,7 @@ rudhra({
         const firstVideo = videos[0];
         const videoUrl = firstVideo.url;
 
-        const response = await axios.get(`https://api.tioo.eu.org/download/ytdl?url=${videoUrl}`);
+        const response = await axios.get(`https://meitang.xyz/download/ytdl?url=${videoUrl}`);
         const { result, title } = response.data;
         const mp3 = result.mp3;
         await message.reply(`_Downloading ${result.title}_`);
@@ -77,7 +77,7 @@ rudhra({
         const firstVideo = videos[0];
         const videoUrl = firstVideo.url;
 
-        const response = await axios.get(`https://api.tioo.eu.org/download/ytdl?url=${videoUrl}`);
+        const response = await axios.get(`https://meitang.xyz/download/ytdl?url=${videoUrl}`);
         const { result, title } = response.data;
         const mp4 = result.mp4;
         await message.reply(`_Downloading ${result.title}_`);
@@ -104,7 +104,7 @@ rudhra({
 
     const videoUrl = match;
     try {
-        const response = await axios.get(`https://api.tioo.eu.org/download/ytdl?url=${videoUrl}`);
+        const response = await axios.get(`https://meitang.xyz/download/ytdl?url=${videoUrl}`);
         const { result, title } = response.data;
         const mp3 = result.mp3;
         await message.reply(`_Downloading ${result.title}_`);
@@ -136,7 +136,7 @@ rudhra({
 
     const videoUrl = match;
     try {
-        const response = await axios.get(`https://api.tioo.eu.org/download/ytdl?url=${videoUrl}`);
+        const response = await axios.get(`https://meitang.xyz/download/ytdl?url=${videoUrl}`);
         const { result, title } = response.data;
         const mp4 = result.mp4;
         await message.reply(`_Downloading ${result.title}_`);
@@ -179,7 +179,7 @@ rudhra({
         }
     }
 
-    const apiUrl = `https://api.tioo.eu.org/download/ytdl?url=${videoUrl}`;
+    const apiUrl = `https://meitang.xyz/download/ytdl?url=${videoUrl}`;
     try {
         const response = await fetch(apiUrl);
         const data = await response.json();
