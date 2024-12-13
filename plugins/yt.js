@@ -22,7 +22,7 @@ rudhra({
     fromMe: mode,
     desc: 'Download audio or video from YouTube.',
     type: 'info'
-}, async (message, match, client) => {
+}, async (message, match, client ) => {
     const userInput = match || message.reply_message?.text;
     if (!userInput) return await message.reply("Please provide a YouTube link.");
     if (!isUrl(userInput)) return await message.reply("Invalid YouTube link. Please provide a valid one.");
@@ -53,7 +53,7 @@ rudhra({
     }
 
     const { mp3, mp4, title } = ytMediaData;
-    const optionsText = `*${title}*\n\n *1.* *Video*\n *2.* *Audio*\n *3.* *Document*\n\n*ʀᴇᴘʟʏ ᴡɪᴛʜ ᴀ ɴᴜᴍʙᴇʀ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ*`;
+    const optionsText = `*${title}*\n\n1. *Video*\n2. *Audio*\n3. *Document*\n\n*ʀᴇᴘʟʏ ᴡɪᴛʜ ᴀ ɴᴜᴍʙᴇʀ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ*`;
     const contextInfoMessage = {
         text: optionsText,
         contextInfo: {
