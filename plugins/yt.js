@@ -22,7 +22,7 @@ rudhra({
     fromMe: mode,
     desc: 'Download audio or video from YouTube.',
     type: 'info'
-}, async (message, match) => {
+}, async (message, match, client) => {
     const userInput = match || message.reply_message?.text;
     if (!userInput) return await message.reply("Please provide a YouTube link.");
     if (!isUrl(userInput)) return await message.reply("Invalid YouTube link. Please provide a valid one.");
