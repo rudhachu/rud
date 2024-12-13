@@ -16,6 +16,104 @@ const axios = require('axios');
 const fetch = require('node-fetch');
 const config = require('../config');
 const yts = require("yt-search");
+
+rudhra({
+    pattern: 'ytd ?(.*)',
+    fromMe: mode,
+    desc: 'Download audio or video from YouTube.',
+    type: 'info'
+}, async (message, match) => {
+    const userInput = match || message.reply_message?.text;
+    if (!userInput) return await message.reply("Please provide a YouTube link.");
+    if (!isUrl(userInput)) return await message.reply("Invalid YouTube link. Please provide a valid one.");
+
+    const YtbUrl = userInput.trim();
+    const apiUrls = [
+        `https://meitang.xyz/download/ytdl?url=${YtbUrl}`,
+        `https://btch.us.kg/download/ytdl?url=${YtbUrl}`,
+        `https://api.tioo.eu.org/download/ytdl?url=${YtbUrl}`,
+        `https://api.tioprm.eu.org/download/ytdl?url=${YtbUrl}`
+    ];
+
+    let ytMediaData = null;
+    for (const apiUrl of apiUrls) {
+        try {
+            const response = await axios.get(apiUrl, { timeout: 10000 }); // 10-second timeout
+            if (response.data && response.data.result) {
+                ytMediaData = response.data.result;
+                break; // Exit loop if successful
+            }
+        } catch (error) {
+            console.error(`Error fetching from ${apiUrl}:`, error.message);
+        }
+    }
+
+    if (!ytMediaData) {
+        return await message.reply("Failed to retrieve media from all sources. Please try again later.");
+    }
+
+    const { mp3, mp4, title } = ytMediaData;
+    const optionsText = `*${title}*\n\n *1.* *Video*\n *2.* *Audio*\n *3.* *Document*\n\n*ʀᴇᴘʟʏ ᴡɪᴛʜ ᴀ ɴᴜᴍʙᴇʀ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ*`;
+    const contextInfoMessage = {
+        text: optionsText,
+        contextInfo: {
+            externalAdReply: {
+                title: "𝗬𝗼𝘂𝗧𝘂𝗯𝗲 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿",
+                body: "ʀᴜᴅʜʀᴀ ʙᴏᴛ",
+                sourceUrl: YtbUrl,
+                mediaUrl: YtbUrl,
+                mediaType: 1,
+                showAdAttribution: true,
+                thumbnailUrl: "https://i.imgur.com/xWzUYiF.png"
+            }
+        }
+    };
+
+    const sentMsg = await client.sendMessage(message.jid, contextInfoMessage, { quoted: message.data });
+
+    // Listen for user response
+    client.ev.on('messages.upsert', async (msg) => {
+        const newMessage = msg.messages[0];
+
+        if (
+            newMessage.key.remoteJid === message.jid &&
+            newMessage.message?.extendedTextMessage?.contextInfo?.stanzaId === sentMsg.key.id
+        ) {
+            const userReply = newMessage.message?.conversation || newMessage.message?.extendedTextMessage?.text;
+
+            if (userReply === '1' && mp4) {
+                // Send video
+                await client.sendMessage(
+                    message.jid,
+                    { video: { url: mp4 }, mimetype: "video/mp4" },
+                    { quoted: message.data }
+                );
+            } else if (userReply === '2' && mp3) {
+                // Send audio
+                await client.sendMessage(
+                    message.jid,
+                    { audio: { url: mp3 }, mimetype: "audio/mpeg" },
+                    { quoted: message.data }
+                );
+            } else if (userReply === '3' && mp3) {
+                // Send document
+                await client.sendMessage(
+                    message.jid,
+                    {
+                        document: { url: mp3 },
+                        mimetype: 'audio/mpeg',
+                        fileName: `${title}.mp3`,
+                        caption: `_${title}_`
+                    },
+                    { quoted: message.data }
+                );
+            } else {
+                await client.sendMessage(message.jid, { text: "Invalid option or unavailable media. Please reply with 1, 2, or 3." });
+            }
+        }
+    });
+});
+
 rudhra({
     pattern: 'song ?(.*)',
     fromMe: mode,
