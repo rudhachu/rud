@@ -12,6 +12,6 @@ rudhra({
 		let { pushName } = msg.message;
 		let name = pushName.trim().replace(/\s+/g, ' ') || "unable to find the name";
 		let sudo = numToJid(SUDO.split(',')[0]) || message.client.user.id;
-		await message.forwardMessage(sudo, msg.message , { contextInfo: { isFrowarded: false, externalAdReply: { title: "deleted message", body: `from: ${name}`, mediaType: 1, thumbnailUrl: "https://i.imgur.com/NezTSpv.png", mediaUrl: "https://www.youtube.com/princerudh", sourceUrl: "https://www.youtube.com/princerudh" }}, quoted: msg.message })
+		await message.rudhforwardMessage(sudo, msg.message , { contextInfo: { isFrowarded: false, externalAdReply: { title: "deleted message", body: `from: ${name}`, mediaType: 1, thumbnailUrl: "https://i.imgur.com/NezTSpv.png", mediaUrl: "https://www.youtube.com/princerudh", sourceUrl: "https://www.youtube.com/princerudh" }}, quoted: msg.message })
 	}
 });
