@@ -4,7 +4,7 @@ const { DELETED_LOG_CHAT, DELETED_LOG } = require("../config");
 rudhra(
   {
     on: "delete",
-    fromMe: mode,
+    fromMe: false,
     desc: "Logs the recent deleted message",
   },
   async (message, match) => {
